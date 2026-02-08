@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Vulkan REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(ALSA QUIET)
 
 add_executable(uvkornio_visualizer
     src/main.cpp
@@ -23,3 +24,8 @@ add_executable(uvkornio_visualizer
 
 target_include_directories(uvkornio_visualizer PRIVATE src)
 target_link_libraries(uvkornio_visualizer PRIVATE Vulkan::Vulkan glfw)
+
+if(ALSA_FOUND)
+    target_compile_definitions(uvkornio_visualizer PRIVATE UVK_ENABLE_ALSA)
+    target_link_libraries(uvkornio_visualizer PRIVATE ALSA::ALSA)
+endif()

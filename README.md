@@ -14,7 +14,8 @@ Native C++ Vulkan framework prototype for real-time surround audio reporting and
 - A GLFW-backed Vulkan swapchain and triangle baseline render pass.
 
 ## Building
-Requires the Vulkan SDK (headers + loader), GLFW, and a C++20 toolchain.
+Requires the Vulkan SDK (headers + loader), GLFW, and a C++20 toolchain. ALSA is optional for
+microphone capture on Linux.
 
 ```bash
 cmake -S . -B build
