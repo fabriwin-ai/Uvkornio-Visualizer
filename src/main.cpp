@@ -19,6 +19,7 @@ class VisualizerApp {
     visualizer_.initialize(app_.context(), fftSize / 2, kHistoryLength);
     app_.setWaterfallSource(visualizer_.waterfallBuffer(), visualizer_.waterfallBinCount(),
                             visualizer_.waterfallHistoryLength());
+    app_.setAnalysisSource(visualizer_.analysisBuffer());
 
     MicrophoneInput microphone(48000.0f, 1024);
     SurroundAnalyzer analyzer;

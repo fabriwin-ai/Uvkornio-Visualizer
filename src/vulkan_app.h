@@ -20,6 +20,7 @@ class VulkanApp {
 
   void initialize(const std::string& title, int width, int height);
   void setWaterfallSource(const VulkanBuffer& buffer, size_t binCount, size_t historyLength);
+  void setAnalysisSource(const VulkanBuffer& buffer);
   void run(const std::function<void()>& perFrame);
   void shutdown();
 
@@ -67,6 +68,7 @@ class VulkanApp {
   VkFence inFlightFence_{VK_NULL_HANDLE};
   VulkanContext context_;
   VulkanBuffer waterfallBuffer_{};
+  VulkanBuffer analysisBuffer_{};
   size_t waterfallBinCount_{0};
   size_t waterfallHistoryLength_{0};
   bool initialized_{false};

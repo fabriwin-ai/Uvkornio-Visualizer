@@ -9,6 +9,7 @@ Native C++ Vulkan framework prototype for real-time surround audio reporting and
 - A spectrum analyzer and waterfall ring buffer ready for Vulkan-driven 3D visuals.
 - EnkiTS-style async task scheduling for parallel Hz-band analysis.
 - A visualizer loop that uploads waterfall data into a Vulkan storage buffer.
+- Surround analysis metrics uploaded to GPU storage buffers for shader-driven visuals.
 - A microphone input abstraction (currently backed by the simulator).
 - Differential math utilities to bound X/Y/Z vectors for streaming waterfall volumes.
 - A GLFW-backed Vulkan swapchain and triangle baseline render pass.

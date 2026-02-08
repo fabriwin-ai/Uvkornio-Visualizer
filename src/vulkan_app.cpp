@@ -87,6 +87,17 @@ void VulkanApp::setWaterfallSource(const VulkanBuffer& buffer, size_t binCount,
   createDescriptorSet();
 }
 
+void VulkanApp::setAnalysisSource(const VulkanBuffer& buffer) {
+  analysisBuffer_ = buffer;
+  if (descriptorSetLayout_ == VK_NULL_HANDLE) {
+    createDescriptorSetLayout();
+  }
+  if (descriptorPool_ == VK_NULL_HANDLE) {
+    createDescriptorPool();
+  }
+  createDescriptorSet();
+}
+
 void VulkanApp::run(const std::function<void()>& perFrame) {
   while (window_ && !glfwWindowShouldClose(window_)) {
     glfwPollEvents();
@@ -293,16 +304,24 @@ void VulkanApp::createDescriptorSetLayout() {
   if (descriptorSetLayout_ != VK_NULL_HANDLE) {
     return;
   }
-  VkDescriptorSetLayoutBinding storageBinding{};
-  storageBinding.binding = 0;
-  storageBinding.descriptorCount = 1;
-  storageBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  storageBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+  VkDescriptorSetLayoutBinding waterfallBinding{};
+  waterfallBinding.binding = 0;
+  waterfallBinding.descriptorCount = 1;
+  waterfallBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  waterfallBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+  VkDescriptorSetLayoutBinding analysisBinding{};
+  analysisBinding.binding = 1;
+  analysisBinding.descriptorCount = 1;
+  analysisBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  analysisBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+
+  VkDescriptorSetLayoutBinding bindings[] = {waterfallBinding, analysisBinding};
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = 1;
-  layoutInfo.pBindings = &storageBinding;
+  layoutInfo.bindingCount = 2;
+  layoutInfo.pBindings = bindings;
 
   if (vkCreateDescriptorSetLayout(context_.device(), &layoutInfo, nullptr,
                                   &descriptorSetLayout_) != VK_SUCCESS) {
@@ -314,15 +333,17 @@ void VulkanApp::createDescriptorPool() {
   if (descriptorPool_ != VK_NULL_HANDLE) {
     return;
   }
-  VkDescriptorPoolSize poolSize{};
-  poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  poolSize.descriptorCount = 1;
+  VkDescriptorPoolSize poolSizes[2]{};
+  poolSizes[0].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  poolSizes[0].descriptorCount = 1;
+  poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  poolSizes[1].descriptorCount = 1;
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
   poolInfo.maxSets = 1;
-  poolInfo.poolSizeCount = 1;
-  poolInfo.pPoolSizes = &poolSize;
+  poolInfo.poolSizeCount = 2;
+  poolInfo.pPoolSizes = poolSizes;
 
   if (vkCreateDescriptorPool(context_.device(), &poolInfo, nullptr, &descriptorPool_) !=
       VK_SUCCESS) {
@@ -332,7 +353,7 @@ void VulkanApp::createDescriptorPool() {
 
 void VulkanApp::createDescriptorSet() {
   if (descriptorPool_ == VK_NULL_HANDLE || descriptorSetLayout_ == VK_NULL_HANDLE ||
-      waterfallBuffer_.buffer == VK_NULL_HANDLE) {
+      waterfallBuffer_.buffer == VK_NULL_HANDLE || analysisBuffer_.buffer == VK_NULL_HANDLE) {
     return;
   }
 
@@ -351,15 +372,27 @@ void VulkanApp::createDescriptorSet() {
   bufferInfo.offset = 0;
   bufferInfo.range = waterfallBuffer_.size;
 
-  VkWriteDescriptorSet descriptorWrite{};
-  descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-  descriptorWrite.dstSet = descriptorSet_;
-  descriptorWrite.dstBinding = 0;
-  descriptorWrite.descriptorCount = 1;
-  descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-  descriptorWrite.pBufferInfo = &bufferInfo;
+  VkDescriptorBufferInfo analysisInfo{};
+  analysisInfo.buffer = analysisBuffer_.buffer;
+  analysisInfo.offset = 0;
+  analysisInfo.range = analysisBuffer_.size;
 
-  vkUpdateDescriptorSets(context_.device(), 1, &descriptorWrite, 0, nullptr);
+  VkWriteDescriptorSet descriptorWrites[2]{};
+  descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  descriptorWrites[0].dstSet = descriptorSet_;
+  descriptorWrites[0].dstBinding = 0;
+  descriptorWrites[0].descriptorCount = 1;
+  descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+  descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  descriptorWrites[1].dstSet = descriptorSet_;
+  descriptorWrites[1].dstBinding = 1;
+  descriptorWrites[1].descriptorCount = 1;
+  descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  descriptorWrites[1].pBufferInfo = &analysisInfo;
+
+  vkUpdateDescriptorSets(context_.device(), 2, descriptorWrites, 0, nullptr);
 }
 
 void VulkanApp::createPipeline() {
@@ -585,7 +618,7 @@ void VulkanApp::recreateSwapchain() {
   createSwapchain();
   createImageViews();
   createRenderPass();
-  if (waterfallBuffer_.buffer != VK_NULL_HANDLE) {
+  if (waterfallBuffer_.buffer != VK_NULL_HANDLE && analysisBuffer_.buffer != VK_NULL_HANDLE) {
     createDescriptorPool();
     createDescriptorSet();
   }

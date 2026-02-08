@@ -29,6 +29,7 @@ class Visualizer {
   [[nodiscard]] const VulkanBuffer& waterfallBuffer() const noexcept {
     return waterfall_.buffer();
   }
+  [[nodiscard]] const VulkanBuffer& analysisBuffer() const noexcept { return analysisBuffer_; }
   [[nodiscard]] size_t waterfallBinCount() const noexcept { return waterfall_.binCount(); }
   [[nodiscard]] size_t waterfallHistoryLength() const noexcept {
     return waterfall_.historyLength();
@@ -38,6 +39,7 @@ class Visualizer {
   VulkanContext* context_{nullptr};
   VisualizerState state_{};
   WaterfallRenderer waterfall_;
+  VulkanBuffer analysisBuffer_{};
 };
 
 }  // namespace uvk
