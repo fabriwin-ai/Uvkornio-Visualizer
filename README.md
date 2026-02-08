@@ -30,6 +30,8 @@ Choose a spectrum preset or capture backend at runtime:
 ```bash
 ./build/uvkornio_visualizer --preset=Wideband --backend=simulator
 ./build/uvkornio_visualizer --preset=Subwoofer --backend=alsa
+./build/uvkornio_visualizer --list-presets
+./build/uvkornio_visualizer --list-backends
 ```
 
 Compile the baseline shaders (from the Vulkan SDK tutorial) before running:

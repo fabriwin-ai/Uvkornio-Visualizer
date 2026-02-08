@@ -52,16 +52,38 @@ int main(int argc, char** argv) {
   try {
     std::string presetName = "Wideband";
     std::string backendName = "simulator";
+    bool listPresets = false;
+    bool listBackends = false;
     for (int i = 1; i < argc; ++i) {
       const std::string arg = argv[i];
       if (arg.rfind("--preset=", 0) == 0) {
         presetName = arg.substr(9);
       } else if (arg.rfind("--backend=", 0) == 0) {
         backendName = arg.substr(10);
+      } else if (arg == "--list-presets") {
+        listPresets = true;
+      } else if (arg == "--list-backends") {
+        listBackends = true;
       } else if (arg == "--help") {
-        std::cout << "Usage: uvkornio_visualizer [--preset=Name] [--backend=simulator|alsa]\n";
+        std::cout
+            << "Usage: uvkornio_visualizer [--preset=Name] [--backend=simulator|alsa]\n"
+               "       uvkornio_visualizer --list-presets\n"
+               "       uvkornio_visualizer --list-backends\n";
         return 0;
       }
+    }
+    if (listPresets) {
+      std::cout << "Available presets:\n";
+      for (const auto& name : uvk::availablePresetNames()) {
+        std::cout << " - " << name << '\n';
+      }
+      return 0;
+    }
+    if (listBackends) {
+      std::cout << "Available backends:\n"
+                   " - simulator\n"
+                   " - alsa (if enabled at build time)\n";
+      return 0;
     }
     bool presetFound = false;
     const auto preset = uvk::presetByName(presetName, &presetFound);

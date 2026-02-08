@@ -668,7 +668,9 @@ void VulkanApp::drawFrame() {
                      sizeof(pushConstants), pushConstants);
   const uint32_t vertexCount =
       static_cast<uint32_t>(waterfallBinCount_ * waterfallHistoryLength_);
-  vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+  if (vertexCount > 0) {
+    vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+  }
   vkCmdEndRenderPass(commandBuffer);
 
   vkEndCommandBuffer(commandBuffer);

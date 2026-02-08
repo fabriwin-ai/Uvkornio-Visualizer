@@ -27,6 +27,14 @@ inline std::vector<SpectrumPreset> availablePresets() {
   return {makeWidebandPreset(), makeSubwooferPreset(), makePresencePreset()};
 }
 
+inline std::vector<std::string> availablePresetNames() {
+  std::vector<std::string> names;
+  for (const auto& preset : availablePresets()) {
+    names.push_back(preset.name);
+  }
+  return names;
+}
+
 inline SpectrumPreset presetByName(const std::string& name, bool* found = nullptr) {
   for (const auto& preset : availablePresets()) {
     if (preset.name == name) {
