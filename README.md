@@ -11,14 +11,22 @@ Native C++ Vulkan framework prototype for real-time surround audio reporting and
 - A visualizer loop that uploads waterfall data into a Vulkan storage buffer.
 - A microphone input abstraction (currently backed by the simulator).
 - Differential math utilities to bound X/Y/Z vectors for streaming waterfall volumes.
+- A GLFW-backed Vulkan swapchain and triangle baseline render pass.
 
 ## Building
-Requires the Vulkan SDK (headers + loader) and a C++20 toolchain.
+Requires the Vulkan SDK (headers + loader), GLFW, and a C++20 toolchain.
 
 ```bash
 cmake -S . -B build
 cmake --build build
 ./build/uvkornio_visualizer
+```
+
+Compile the baseline triangle shaders (from the Vulkan SDK tutorial) before running:
+
+```bash
+glslc shaders/triangle.vert.glsl -o shaders/triangle.vert.spv
+glslc shaders/triangle.frag.glsl -o shaders/triangle.frag.spv
 ```
 
 ## Next steps

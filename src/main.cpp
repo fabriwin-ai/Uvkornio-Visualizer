@@ -2,48 +2,41 @@
 #include "microphone_input.h"
 #include "spectrum_analyzer.h"
 #include "surround_analyzer.h"
+#include "vulkan_app.h"
 #include "visualizer.h"
 #include "visualizer_presets.h"
-#include "vulkan_context.h"
-
-#include <chrono>
 #include <iostream>
-#include <thread>
 
 namespace uvk {
 
 class VisualizerApp {
  public:
   void run() {
-    context_.initialize("Uvkornio Visualizer");
+    app_.initialize("Uvkornio Visualizer", 1280, 720);
     const auto preset = makeWidebandPreset();
     const size_t fftSize = static_cast<size_t>(preset.fftSize);
     constexpr size_t kHistoryLength = 120;
-    visualizer_.initialize(context_, fftSize / 2, kHistoryLength);
+    visualizer_.initialize(app_.context(), fftSize / 2, kHistoryLength);
 
     MicrophoneInput microphone(48000.0f, 1024);
     SurroundAnalyzer analyzer;
     SpectrumAnalyzer spectrumAnalyzer;
     EnkiTaskScheduler scheduler;
     scheduler.initialize();
-
-    constexpr int kFrameCount = 120;
-    for (int frame = 0; frame < kFrameCount; ++frame) {
+    app_.run([&]() {
       const auto block = microphone.captureBlock();
       const auto analysis = analyzer.analyze(block);
       const auto spectrum = spectrumAnalyzer.analyze(
           block, static_cast<int>(fftSize), preset.bandEdgesHz, &scheduler);
       visualizer_.update(analysis, spectrum);
-      visualizer_.renderFrame();
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    }
+    });
 
     visualizer_.shutdown();
+    app_.shutdown();
   }
 
  private:
-  VulkanContext context_;
+  VulkanApp app_;
   Visualizer visualizer_;
 };
 

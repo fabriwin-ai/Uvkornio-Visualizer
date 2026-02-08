@@ -20,9 +20,29 @@ VulkanContext::~VulkanContext() {
 }
 
 void VulkanContext::initialize(const std::string& appName) {
-  createInstance(appName);
-  pickPhysicalDevice();
-  createDevice();
+  createInstance(appName, {});
+  pickPhysicalDevice({});
+  createDevice({});
+}
+
+void VulkanContext::initializeWithSurface(const std::string& appName,
+                                          const std::vector<const char*>& instanceExtensions,
+                                          const std::vector<const char*>& deviceExtensions,
+                                          VkSurfaceKHR surface) {
+  initializeInstance(appName, instanceExtensions);
+  initializeDeviceWithSurface(surface, deviceExtensions);
+}
+
+void VulkanContext::initializeInstance(const std::string& appName,
+                                       const std::vector<const char*>& instanceExtensions) {
+  createInstance(appName, instanceExtensions);
+}
+
+void VulkanContext::initializeDeviceWithSurface(
+    VkSurfaceKHR surface, const std::vector<const char*>& deviceExtensions) {
+  surface_ = surface;
+  pickPhysicalDevice(deviceExtensions);
+  createDevice(deviceExtensions);
 }
 
 void VulkanContext::shutdown() {
@@ -37,7 +57,8 @@ void VulkanContext::shutdown() {
   }
 }
 
-void VulkanContext::createInstance(const std::string& appName) {
+void VulkanContext::createInstance(const std::string& appName,
+                                   const std::vector<const char*>& instanceExtensions) {
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = appName.c_str();
@@ -49,12 +70,15 @@ void VulkanContext::createInstance(const std::string& appName) {
   VkInstanceCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfo.pApplicationInfo = &appInfo;
+  createInfo.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
+  createInfo.ppEnabledExtensionNames =
+      instanceExtensions.empty() ? nullptr : instanceExtensions.data();
 
   checkVk(vkCreateInstance(&createInfo, nullptr, &instance_),
           "Failed to create Vulkan instance.");
 }
 
-void VulkanContext::pickPhysicalDevice() {
+void VulkanContext::pickPhysicalDevice(const std::vector<const char*>& deviceExtensions) {
   uint32_t deviceCount = 0;
   checkVk(vkEnumeratePhysicalDevices(instance_, &deviceCount, nullptr),
           "Failed to enumerate Vulkan physical devices.");
@@ -66,38 +90,128 @@ void VulkanContext::pickPhysicalDevice() {
   checkVk(vkEnumeratePhysicalDevices(instance_, &deviceCount, devices.data()),
           "Failed to enumerate Vulkan physical devices.");
 
-  physicalDevice_ = devices.front();
+  for (const auto& device : devices) {
+    if (isDeviceSuitable(device, deviceExtensions)) {
+      physicalDevice_ = device;
+      break;
+    }
+  }
+  if (physicalDevice_ == VK_NULL_HANDLE) {
+    throw std::runtime_error("No suitable Vulkan physical device found.");
+  }
   vkGetPhysicalDeviceMemoryProperties(physicalDevice_, &memoryProperties_);
 }
 
-void VulkanContext::createDevice() {
+void VulkanContext::createDevice(const std::vector<const char*>& deviceExtensions) {
+  findQueueFamilies(physicalDevice_);
+  std::vector<uint32_t> uniqueFamilies = {graphicsFamilyIndex_};
+  if (presentFamilyIndex_ != graphicsFamilyIndex_) {
+    uniqueFamilies.push_back(presentFamilyIndex_);
+  }
+
+  std::vector<VkDeviceQueueCreateInfo> queueInfos;
+  const float priority = 1.0f;
+  queueInfos.reserve(uniqueFamilies.size());
+  for (uint32_t family : uniqueFamilies) {
+    VkDeviceQueueCreateInfo queueInfo{};
+    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueInfo.queueFamilyIndex = family;
+    queueInfo.queueCount = 1;
+    queueInfo.pQueuePriorities = &priority;
+    queueInfos.push_back(queueInfo);
+  }
+
   uint32_t queueFamilyCount = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount, nullptr);
   std::vector<VkQueueFamilyProperties> families(queueFamilyCount);
   vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount, families.data());
 
-  uint32_t graphicsIndex = 0;
-  for (uint32_t i = 0; i < queueFamilyCount; ++i) {
-    if (families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-      graphicsIndex = i;
-      break;
-    }
-  }
-
-  const float priority = 1.0f;
-  VkDeviceQueueCreateInfo queueInfo{};
-  queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-  queueInfo.queueFamilyIndex = graphicsIndex;
-  queueInfo.queueCount = 1;
-  queueInfo.pQueuePriorities = &priority;
-
   VkDeviceCreateInfo deviceInfo{};
   deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-  deviceInfo.queueCreateInfoCount = 1;
-  deviceInfo.pQueueCreateInfos = &queueInfo;
+  deviceInfo.queueCreateInfoCount = static_cast<uint32_t>(queueInfos.size());
+  deviceInfo.pQueueCreateInfos = queueInfos.data();
+  deviceInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+  deviceInfo.ppEnabledExtensionNames =
+      deviceExtensions.empty() ? nullptr : deviceExtensions.data();
 
   checkVk(vkCreateDevice(physicalDevice_, &deviceInfo, nullptr, &device_),
           "Failed to create Vulkan device.");
+
+  vkGetDeviceQueue(device_, graphicsFamilyIndex_, 0, &graphicsQueue_);
+  vkGetDeviceQueue(device_, presentFamilyIndex_, 0, &presentQueue_);
+}
+
+bool VulkanContext::isDeviceSuitable(
+    VkPhysicalDevice device, const std::vector<const char*>& deviceExtensions) const {
+  if (!checkDeviceExtensionSupport(device, deviceExtensions)) {
+    return false;
+  }
+  if (surface_ != VK_NULL_HANDLE) {
+    VkBool32 presentSupport = VK_FALSE;
+    findQueueFamilies(device);
+    vkGetPhysicalDeviceSurfaceSupportKHR(device, presentFamilyIndex_, surface_, &presentSupport);
+    if (!presentSupport) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool VulkanContext::checkDeviceExtensionSupport(
+    VkPhysicalDevice device, const std::vector<const char*>& deviceExtensions) const {
+  if (deviceExtensions.empty()) {
+    return true;
+  }
+  uint32_t extensionCount = 0;
+  vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+  std::vector<VkExtensionProperties> available(extensionCount);
+  vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, available.data());
+
+  for (const char* required : deviceExtensions) {
+    bool found = false;
+    for (const auto& ext : available) {
+      if (std::string(ext.extensionName) == required) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void VulkanContext::findQueueFamilies(VkPhysicalDevice device) {
+  uint32_t queueFamilyCount = 0;
+  vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+  std::vector<VkQueueFamilyProperties> families(queueFamilyCount);
+  vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, families.data());
+
+  std::optional<uint32_t> graphicsFamily;
+  std::optional<uint32_t> presentFamily;
+
+  for (uint32_t i = 0; i < queueFamilyCount; ++i) {
+    if (families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+      graphicsFamily = i;
+    }
+    if (surface_ != VK_NULL_HANDLE) {
+      VkBool32 presentSupport = VK_FALSE;
+      vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
+      if (presentSupport) {
+        presentFamily = i;
+      }
+    }
+  }
+
+  if (graphicsFamily.has_value()) {
+    graphicsFamilyIndex_ = graphicsFamily.value();
+  }
+  if (presentFamily.has_value()) {
+    presentFamilyIndex_ = presentFamily.value();
+  } else {
+    presentFamilyIndex_ = graphicsFamilyIndex_;
+  }
 }
 
 uint32_t VulkanContext::findMemoryType(uint32_t typeFilter,

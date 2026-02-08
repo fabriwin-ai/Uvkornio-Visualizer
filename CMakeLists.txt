@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Vulkan REQUIRED)
+find_package(glfw3 REQUIRED)
 
 add_executable(uvkornio_visualizer
     src/main.cpp
@@ -14,10 +15,11 @@ add_executable(uvkornio_visualizer
     src/microphone_input.cpp
     src/spectrum_analyzer.cpp
     src/surround_analyzer.cpp
+    src/vulkan_app.cpp
     src/vulkan_context.cpp
     src/visualizer.cpp
     src/waterfall_renderer.cpp
 )
 
 target_include_directories(uvkornio_visualizer PRIVATE src)
-target_link_libraries(uvkornio_visualizer PRIVATE Vulkan::Vulkan)
+target_link_libraries(uvkornio_visualizer PRIVATE Vulkan::Vulkan glfw)
