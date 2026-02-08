@@ -24,14 +24,25 @@ constexpr std::array<std::array<float, 3>, 8> kChannelVectors = {
 
 }  // namespace
 
-SurroundAnalysis SurroundAnalyzer::analyze(const SurroundFrame& frame) const {
+SurroundAnalysis SurroundAnalyzer::analyze(const SurroundBlock& block) const {
   SurroundAnalysis analysis{};
+  std::array<float, 8> sumSquares{};
+
+  if (block.samples.empty()) {
+    return analysis;
+  }
+
+  for (const auto& sample : block.samples) {
+    for (size_t i = 0; i < sample.size(); ++i) {
+      sumSquares[i] += sample[i] * sample[i];
+    }
+  }
+
   float energySum = 0.0f;
   std::array<float, 8> weights{};
-
-  for (size_t i = 0; i < frame.channels.size(); ++i) {
-    const float sample = frame.channels[i];
-    const float rms = std::sqrt(sample * sample);
+  const float invCount = 1.0f / static_cast<float>(block.samples.size());
+  for (size_t i = 0; i < sumSquares.size(); ++i) {
+    const float rms = std::sqrt(sumSquares[i] * invCount);
     analysis.rms[i] = rms;
     energySum += rms;
     weights[i] = rms;

@@ -10,9 +10,11 @@ find_package(Vulkan REQUIRED)
 add_executable(uvkornio_visualizer
     src/main.cpp
     src/audio_stream.cpp
+    src/spectrum_analyzer.cpp
     src/surround_analyzer.cpp
     src/vulkan_context.cpp
     src/visualizer.cpp
+    src/waterfall_renderer.cpp
 )
 
 target_include_directories(uvkornio_visualizer PRIVATE src)

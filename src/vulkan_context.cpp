@@ -67,6 +67,7 @@ void VulkanContext::pickPhysicalDevice() {
           "Failed to enumerate Vulkan physical devices.");
 
   physicalDevice_ = devices.front();
+  vkGetPhysicalDeviceMemoryProperties(physicalDevice_, &memoryProperties_);
 }
 
 void VulkanContext::createDevice() {
@@ -97,6 +98,59 @@ void VulkanContext::createDevice() {
 
   checkVk(vkCreateDevice(physicalDevice_, &deviceInfo, nullptr, &device_),
           "Failed to create Vulkan device.");
+}
+
+uint32_t VulkanContext::findMemoryType(uint32_t typeFilter,
+                                       VkMemoryPropertyFlags properties) const {
+  for (uint32_t i = 0; i < memoryProperties_.memoryTypeCount; ++i) {
+    if ((typeFilter & (1u << i)) &&
+        (memoryProperties_.memoryTypes[i].propertyFlags & properties) == properties) {
+      return i;
+    }
+  }
+  throw std::runtime_error("Failed to find suitable Vulkan memory type.");
+}
+
+VulkanBuffer VulkanContext::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
+                                         VkMemoryPropertyFlags properties) {
+  VulkanBuffer buffer{};
+  buffer.size = size;
+
+  VkBufferCreateInfo bufferInfo{};
+  bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+  bufferInfo.size = size;
+  bufferInfo.usage = usage;
+  bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  checkVk(vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer.buffer),
+          "Failed to create Vulkan buffer.");
+
+  VkMemoryRequirements requirements{};
+  vkGetBufferMemoryRequirements(device_, buffer.buffer, &requirements);
+
+  VkMemoryAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+  allocInfo.allocationSize = requirements.size;
+  allocInfo.memoryTypeIndex = findMemoryType(requirements.memoryTypeBits, properties);
+
+  checkVk(vkAllocateMemory(device_, &allocInfo, nullptr, &buffer.memory),
+          "Failed to allocate Vulkan buffer memory.");
+  checkVk(vkBindBufferMemory(device_, buffer.buffer, buffer.memory, 0),
+          "Failed to bind Vulkan buffer memory.");
+
+  return buffer;
+}
+
+void VulkanContext::destroyBuffer(VulkanBuffer& buffer) {
+  if (buffer.buffer != VK_NULL_HANDLE) {
+    vkDestroyBuffer(device_, buffer.buffer, nullptr);
+    buffer.buffer = VK_NULL_HANDLE;
+  }
+  if (buffer.memory != VK_NULL_HANDLE) {
+    vkFreeMemory(device_, buffer.memory, nullptr);
+    buffer.memory = VK_NULL_HANDLE;
+  }
+  buffer.size = 0;
 }
 
 }  // namespace uvk

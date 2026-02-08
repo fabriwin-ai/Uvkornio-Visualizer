@@ -1,12 +1,14 @@
 #pragma once
 
 #include <array>
+#include <vector>
 
 namespace uvk {
 
-struct SurroundFrame {
-  std::array<float, 8> channels{};
+struct SurroundBlock {
+  std::vector<std::array<float, 8>> samples;
   double timestampSeconds{};
+  float sampleRate{};
 };
 
 class AudioStream {
@@ -16,7 +18,7 @@ class AudioStream {
   [[nodiscard]] float sampleRate() const noexcept { return sampleRate_; }
   [[nodiscard]] int blockSize() const noexcept { return blockSize_; }
 
-  SurroundFrame nextFrame();
+  SurroundBlock nextBlock();
 
  private:
   float sampleRate_{};

@@ -17,7 +17,7 @@ struct SurroundAnalysis {
 
 class SurroundAnalyzer {
  public:
-  SurroundAnalysis analyze(const SurroundFrame& frame) const;
+  SurroundAnalysis analyze(const SurroundBlock& block) const;
 };
 
 }  // namespace uvk
