@@ -6,14 +6,14 @@
 #include "visualizer.h"
 #include "visualizer_presets.h"
 #include <iostream>
+#include <string>
 
 namespace uvk {
 
 class VisualizerApp {
  public:
-  void run() {
+  void run(const SpectrumPreset& preset, const std::string& backendName) {
     app_.initialize("Uvkornio Visualizer", 1280, 720);
-    const auto preset = makeWidebandPreset();
     const size_t fftSize = static_cast<size_t>(preset.fftSize);
     constexpr size_t kHistoryLength = 120;
     visualizer_.initialize(app_.context(), fftSize / 2, kHistoryLength);
@@ -22,10 +22,13 @@ class VisualizerApp {
     app_.setAnalysisSource(visualizer_.analysisBuffer());
 
     MicrophoneInput microphone(48000.0f, 1024);
+    microphone.selectBackend(backendName);
     SurroundAnalyzer analyzer;
     SpectrumAnalyzer spectrumAnalyzer;
     EnkiTaskScheduler scheduler;
     scheduler.initialize();
+    std::cout << "Preset: " << preset.name << " | Backend: " << microphone.activeBackend()
+              << '\n';
     app_.run([&]() {
       const auto block = microphone.captureBlock();
       const auto analysis = analyzer.analyze(block);
@@ -45,10 +48,28 @@ class VisualizerApp {
 
 }  // namespace uvk
 
-int main() {
+int main(int argc, char** argv) {
   try {
+    std::string presetName = "Wideband";
+    std::string backendName = "simulator";
+    for (int i = 1; i < argc; ++i) {
+      const std::string arg = argv[i];
+      if (arg.rfind("--preset=", 0) == 0) {
+        presetName = arg.substr(9);
+      } else if (arg.rfind("--backend=", 0) == 0) {
+        backendName = arg.substr(10);
+      } else if (arg == "--help") {
+        std::cout << "Usage: uvkornio_visualizer [--preset=Name] [--backend=simulator|alsa]\n";
+        return 0;
+      }
+    }
+    bool presetFound = false;
+    const auto preset = uvk::presetByName(presetName, &presetFound);
+    if (!presetFound) {
+      std::cerr << "Unknown preset '" << presetName << "', falling back to Wideband.\n";
+    }
     uvk::VisualizerApp app;
-    app.run();
+    app.run(preset, backendName);
   } catch (const std::exception& ex) {
     std::cerr << "Visualizer failed: " << ex.what() << '\n';
     return 1;

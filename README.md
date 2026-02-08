@@ -24,6 +24,14 @@ cmake --build build
 ./build/uvkornio_visualizer
 ```
 
+### Presets & backend selection
+Choose a spectrum preset or capture backend at runtime:
+
+```bash
+./build/uvkornio_visualizer --preset=Wideband --backend=simulator
+./build/uvkornio_visualizer --preset=Subwoofer --backend=alsa
+```
+
 Compile the baseline shaders (from the Vulkan SDK tutorial) before running:
 
 ```bash

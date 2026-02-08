@@ -23,4 +23,23 @@ inline SpectrumPreset makePresencePreset() {
   return {"Presence", 512, {200.0f, 500.0f, 1000.0f, 2500.0f, 5000.0f, 8000.0f}};
 }
 
+inline std::vector<SpectrumPreset> availablePresets() {
+  return {makeWidebandPreset(), makeSubwooferPreset(), makePresencePreset()};
+}
+
+inline SpectrumPreset presetByName(const std::string& name, bool* found = nullptr) {
+  for (const auto& preset : availablePresets()) {
+    if (preset.name == name) {
+      if (found) {
+        *found = true;
+      }
+      return preset;
+    }
+  }
+  if (found) {
+    *found = false;
+  }
+  return makeWidebandPreset();
+}
+
 }  // namespace uvk
