@@ -10,6 +10,7 @@ find_package(Vulkan REQUIRED)
 add_executable(uvkornio_visualizer
     src/main.cpp
     src/audio_stream.cpp
+    src/microphone_input.cpp
     src/spectrum_analyzer.cpp
     src/surround_analyzer.cpp
     src/vulkan_context.cpp
