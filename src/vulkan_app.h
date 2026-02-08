@@ -19,6 +19,7 @@ class VulkanApp {
   VulkanApp& operator=(const VulkanApp&) = delete;
 
   void initialize(const std::string& title, int width, int height);
+  void setWaterfallSource(const VulkanBuffer& buffer, size_t binCount, size_t historyLength);
   void run(const std::function<void()>& perFrame);
   void shutdown();
 
@@ -31,6 +32,9 @@ class VulkanApp {
   void createImageViews();
   void createRenderPass();
   void createPipeline();
+  void createDescriptorSetLayout();
+  void createDescriptorPool();
+  void createDescriptorSet();
   void createFramebuffers();
   void createCommandPool();
   void createCommandBuffers();
@@ -50,6 +54,9 @@ class VulkanApp {
   VkExtent2D swapchainExtent_{};
   std::vector<VkImageView> swapchainImageViews_;
   VkRenderPass renderPass_{VK_NULL_HANDLE};
+  VkDescriptorSetLayout descriptorSetLayout_{VK_NULL_HANDLE};
+  VkDescriptorPool descriptorPool_{VK_NULL_HANDLE};
+  VkDescriptorSet descriptorSet_{VK_NULL_HANDLE};
   VkPipelineLayout pipelineLayout_{VK_NULL_HANDLE};
   VkPipeline graphicsPipeline_{VK_NULL_HANDLE};
   std::vector<VkFramebuffer> swapchainFramebuffers_;
@@ -59,6 +66,9 @@ class VulkanApp {
   VkSemaphore renderFinishedSemaphore_{VK_NULL_HANDLE};
   VkFence inFlightFence_{VK_NULL_HANDLE};
   VulkanContext context_;
+  VulkanBuffer waterfallBuffer_{};
+  size_t waterfallBinCount_{0};
+  size_t waterfallHistoryLength_{0};
   bool initialized_{false};
 };
 

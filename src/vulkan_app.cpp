@@ -64,12 +64,27 @@ void VulkanApp::initialize(const std::string& title, int width, int height) {
   createSwapchain();
   createImageViews();
   createRenderPass();
+  createDescriptorSetLayout();
   createPipeline();
   createFramebuffers();
   createCommandPool();
   createCommandBuffers();
   createSyncObjects();
   initialized_ = true;
+}
+
+void VulkanApp::setWaterfallSource(const VulkanBuffer& buffer, size_t binCount,
+                                   size_t historyLength) {
+  waterfallBuffer_ = buffer;
+  waterfallBinCount_ = binCount;
+  waterfallHistoryLength_ = historyLength;
+  if (descriptorSetLayout_ == VK_NULL_HANDLE) {
+    createDescriptorSetLayout();
+  }
+  if (descriptorPool_ == VK_NULL_HANDLE) {
+    createDescriptorPool();
+  }
+  createDescriptorSet();
 }
 
 void VulkanApp::run(const std::function<void()>& perFrame) {
@@ -104,6 +119,14 @@ void VulkanApp::shutdown() {
   }
   if (commandPool_ != VK_NULL_HANDLE) {
     vkDestroyCommandPool(device, commandPool_, nullptr);
+  }
+  if (descriptorPool_ != VK_NULL_HANDLE) {
+    vkDestroyDescriptorPool(device, descriptorPool_, nullptr);
+    descriptorPool_ = VK_NULL_HANDLE;
+  }
+  if (descriptorSetLayout_ != VK_NULL_HANDLE) {
+    vkDestroyDescriptorSetLayout(device, descriptorSetLayout_, nullptr);
+    descriptorSetLayout_ = VK_NULL_HANDLE;
   }
   cleanupSwapchain();
   if (surface_ != VK_NULL_HANDLE && context_.instance() != VK_NULL_HANDLE) {
@@ -266,9 +289,82 @@ void VulkanApp::createRenderPass() {
   }
 }
 
+void VulkanApp::createDescriptorSetLayout() {
+  if (descriptorSetLayout_ != VK_NULL_HANDLE) {
+    return;
+  }
+  VkDescriptorSetLayoutBinding storageBinding{};
+  storageBinding.binding = 0;
+  storageBinding.descriptorCount = 1;
+  storageBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  storageBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+  VkDescriptorSetLayoutCreateInfo layoutInfo{};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = 1;
+  layoutInfo.pBindings = &storageBinding;
+
+  if (vkCreateDescriptorSetLayout(context_.device(), &layoutInfo, nullptr,
+                                  &descriptorSetLayout_) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create descriptor set layout.");
+  }
+}
+
+void VulkanApp::createDescriptorPool() {
+  if (descriptorPool_ != VK_NULL_HANDLE) {
+    return;
+  }
+  VkDescriptorPoolSize poolSize{};
+  poolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  poolSize.descriptorCount = 1;
+
+  VkDescriptorPoolCreateInfo poolInfo{};
+  poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  poolInfo.maxSets = 1;
+  poolInfo.poolSizeCount = 1;
+  poolInfo.pPoolSizes = &poolSize;
+
+  if (vkCreateDescriptorPool(context_.device(), &poolInfo, nullptr, &descriptorPool_) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("Failed to create descriptor pool.");
+  }
+}
+
+void VulkanApp::createDescriptorSet() {
+  if (descriptorPool_ == VK_NULL_HANDLE || descriptorSetLayout_ == VK_NULL_HANDLE ||
+      waterfallBuffer_.buffer == VK_NULL_HANDLE) {
+    return;
+  }
+
+  VkDescriptorSetAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  allocInfo.descriptorPool = descriptorPool_;
+  allocInfo.descriptorSetCount = 1;
+  allocInfo.pSetLayouts = &descriptorSetLayout_;
+
+  if (vkAllocateDescriptorSets(context_.device(), &allocInfo, &descriptorSet_) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to allocate descriptor set.");
+  }
+
+  VkDescriptorBufferInfo bufferInfo{};
+  bufferInfo.buffer = waterfallBuffer_.buffer;
+  bufferInfo.offset = 0;
+  bufferInfo.range = waterfallBuffer_.size;
+
+  VkWriteDescriptorSet descriptorWrite{};
+  descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  descriptorWrite.dstSet = descriptorSet_;
+  descriptorWrite.dstBinding = 0;
+  descriptorWrite.descriptorCount = 1;
+  descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  descriptorWrite.pBufferInfo = &bufferInfo;
+
+  vkUpdateDescriptorSets(context_.device(), 1, &descriptorWrite, 0, nullptr);
+}
+
 void VulkanApp::createPipeline() {
-  const auto vertShaderCode = readFile("shaders/triangle.vert.spv");
-  const auto fragShaderCode = readFile("shaders/triangle.frag.spv");
+  const auto vertShaderCode = readFile("shaders/waterfall.vert.spv");
+  const auto fragShaderCode = readFile("shaders/waterfall.frag.spv");
 
   VkShaderModule vertModule = createShaderModule(vertShaderCode);
   VkShaderModule fragModule = createShaderModule(fragShaderCode);
@@ -292,7 +388,7 @@ void VulkanApp::createPipeline() {
 
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
   inputAssembly.primitiveRestartEnable = VK_FALSE;
 
   VkViewport viewport{};
@@ -320,8 +416,8 @@ void VulkanApp::createPipeline() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
+  rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
   VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -343,6 +439,15 @@ void VulkanApp::createPipeline() {
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout_;
+
+  VkPushConstantRange pushConstant{};
+  pushConstant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+  pushConstant.offset = 0;
+  pushConstant.size = sizeof(float) * 2;
+  pipelineLayoutInfo.pushConstantRangeCount = 1;
+  pipelineLayoutInfo.pPushConstantRanges = &pushConstant;
 
   if (vkCreatePipelineLayout(context_.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout_) !=
       VK_SUCCESS) {
@@ -453,6 +558,11 @@ void VulkanApp::cleanupSwapchain() {
     vkDestroyRenderPass(device, renderPass_, nullptr);
     renderPass_ = VK_NULL_HANDLE;
   }
+  if (descriptorPool_ != VK_NULL_HANDLE) {
+    vkDestroyDescriptorPool(device, descriptorPool_, nullptr);
+    descriptorPool_ = VK_NULL_HANDLE;
+    descriptorSet_ = VK_NULL_HANDLE;
+  }
   for (auto imageView : swapchainImageViews_) {
     vkDestroyImageView(device, imageView, nullptr);
   }
@@ -475,6 +585,10 @@ void VulkanApp::recreateSwapchain() {
   createSwapchain();
   createImageViews();
   createRenderPass();
+  if (waterfallBuffer_.buffer != VK_NULL_HANDLE) {
+    createDescriptorPool();
+    createDescriptorSet();
+  }
   createPipeline();
   createFramebuffers();
   createCommandBuffers();
@@ -511,7 +625,17 @@ void VulkanApp::drawFrame() {
 
   vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_);
-  vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+  if (descriptorSet_ != VK_NULL_HANDLE) {
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout_, 0, 1,
+                            &descriptorSet_, 0, nullptr);
+  }
+  const float pushConstants[2] = {static_cast<float>(waterfallBinCount_),
+                                  static_cast<float>(waterfallHistoryLength_)};
+  vkCmdPushConstants(commandBuffer, pipelineLayout_, VK_SHADER_STAGE_VERTEX_BIT, 0,
+                     sizeof(pushConstants), pushConstants);
+  const uint32_t vertexCount =
+      static_cast<uint32_t>(waterfallBinCount_ * waterfallHistoryLength_);
+  vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
   vkCmdEndRenderPass(commandBuffer);
 
   vkEndCommandBuffer(commandBuffer);

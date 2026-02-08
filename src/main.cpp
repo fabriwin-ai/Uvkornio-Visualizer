@@ -17,6 +17,8 @@ class VisualizerApp {
     const size_t fftSize = static_cast<size_t>(preset.fftSize);
     constexpr size_t kHistoryLength = 120;
     visualizer_.initialize(app_.context(), fftSize / 2, kHistoryLength);
+    app_.setWaterfallSource(visualizer_.waterfallBuffer(), visualizer_.waterfallBinCount(),
+                            visualizer_.waterfallHistoryLength());
 
     MicrophoneInput microphone(48000.0f, 1024);
     SurroundAnalyzer analyzer;

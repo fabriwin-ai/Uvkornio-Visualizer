@@ -22,11 +22,13 @@ cmake --build build
 ./build/uvkornio_visualizer
 ```
 
-Compile the baseline triangle shaders (from the Vulkan SDK tutorial) before running:
+Compile the baseline shaders (from the Vulkan SDK tutorial) before running:
 
 ```bash
 glslc shaders/triangle.vert.glsl -o shaders/triangle.vert.spv
 glslc shaders/triangle.frag.glsl -o shaders/triangle.frag.spv
+glslc shaders/waterfall.vert.glsl -o shaders/waterfall.vert.spv
+glslc shaders/waterfall.frag.glsl -o shaders/waterfall.frag.spv
 ```
 
 ## Next steps

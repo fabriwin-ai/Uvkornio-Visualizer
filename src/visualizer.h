@@ -26,6 +26,13 @@ class Visualizer {
   void renderFrame();
 
   [[nodiscard]] const VisualizerState& state() const noexcept { return state_; }
+  [[nodiscard]] const VulkanBuffer& waterfallBuffer() const noexcept {
+    return waterfall_.buffer();
+  }
+  [[nodiscard]] size_t waterfallBinCount() const noexcept { return waterfall_.binCount(); }
+  [[nodiscard]] size_t waterfallHistoryLength() const noexcept {
+    return waterfall_.historyLength();
+  }
 
  private:
   VulkanContext* context_{nullptr};

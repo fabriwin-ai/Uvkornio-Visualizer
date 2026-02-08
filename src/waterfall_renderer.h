@@ -17,6 +17,7 @@ class WaterfallRenderer {
   [[nodiscard]] size_t binCount() const noexcept { return binCount_; }
   [[nodiscard]] size_t historyLength() const noexcept { return historyLength_; }
   [[nodiscard]] const std::vector<float>& waterfall() const noexcept { return waterfall_; }
+  [[nodiscard]] const VulkanBuffer& buffer() const noexcept { return buffer_; }
 
  private:
   VulkanContext* context_{nullptr};
