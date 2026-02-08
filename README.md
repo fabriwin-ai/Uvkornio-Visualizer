@@ -10,6 +10,7 @@ Native C++ Vulkan framework prototype for real-time surround audio reporting and
 - EnkiTS-style async task scheduling for parallel Hz-band analysis.
 - A visualizer loop that uploads waterfall data into a Vulkan storage buffer.
 - A microphone input abstraction (currently backed by the simulator).
+- Differential math utilities to bound X/Y/Z vectors for streaming waterfall volumes.
 
 ## Building
 Requires the Vulkan SDK (headers + loader) and a C++20 toolchain.
@@ -22,6 +23,7 @@ cmake --build build
 
 ## Next steps
 - Attach a Vulkan swapchain + render pass for a 3D spectrum waterfall mesh.
+- Use a triangle-setup tutorial from the Vulkan SDK docs as a baseline for the swapchain render path.
 - Replace the audio simulator with a real streaming input (ASIO/CoreAudio/ALSA).
 - Swap the microphone input stub with a platform capture backend.
 - Upload surround analysis to GPU storage buffers for shader-driven visuals.

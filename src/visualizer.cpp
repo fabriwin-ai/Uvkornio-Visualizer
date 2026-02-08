@@ -27,6 +27,8 @@ void Visualizer::update(const SurroundAnalysis& analysis, const SpectrumFrame& s
                  [](float value) { return std::min(value, 1.0f); });
   waterfall_.update(spectrum);
   waterfall_.uploadToGpu();
+  state_.bounds = DifferentialMath::analyzeWaterfall(
+      waterfall_.waterfall(), waterfall_.binCount(), waterfall_.historyLength(), true);
 }
 
 void Visualizer::renderFrame() {
@@ -34,7 +36,9 @@ void Visualizer::renderFrame() {
     return;
   }
   std::cout << "Energy: " << state_.energy << " | Azimuth: " << state_.azimuthDegrees
-            << " | Elevation: " << state_.elevationDegrees << '\n';
+            << " | Elevation: " << state_.elevationDegrees << " | Bounds Y: ["
+            << state_.bounds.bounds.min[1] << ", " << state_.bounds.bounds.max[1] << "]"
+            << '\n';
 }
 
 }  // namespace uvk

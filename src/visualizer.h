@@ -1,5 +1,6 @@
 #pragma once
 
+#include "differential_math.h"
 #include "surround_analyzer.h"
 #include "vulkan_context.h"
 #include "waterfall_renderer.h"
@@ -13,6 +14,7 @@ struct VisualizerState {
   float energy{};
   float azimuthDegrees{};
   float elevationDegrees{};
+  DifferentialBounds bounds{};
 };
 
 class Visualizer {
