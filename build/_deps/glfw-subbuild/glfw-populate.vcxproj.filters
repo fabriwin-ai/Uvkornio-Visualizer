@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\e7797aad7bc994254768d653b335ab6d\glfw-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\22067e84995b363486aa330f40252929\glfw-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\af6b1678a61b4b92cdfbbbeefb0a0bba\glfw-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-subbuild\CMakeFiles\glfw-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{78E6A7CB-72F4-3F09-A511-6BB97594A3D0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

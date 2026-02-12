@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\CMakeFiles\cc9c1b65c52af08382eebf945e07fd76\update_mappings.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-src\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-src\src\mappings.h.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-src\CMake\GenerateMappings.cmake" />
+    <None Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\build\_deps\glfw-build\src\CMakeFiles\update_mappings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{3BA088AE-E5C0-3EDE-B533-1F266216AAEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F7D0A184-CA18-34B3-A8D1-926A40E9A7AD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

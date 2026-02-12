@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\audio_stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\differential_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\microphone_input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\spectrum_analyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\surround_analyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\vulkan_app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\vulkan_context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\visualizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\src\waterfall_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\53890197\Documents\Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A33C924A-6788-3715-9865-0DACFC25803D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

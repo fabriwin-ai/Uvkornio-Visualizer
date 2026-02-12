@@ -1,0 +1,10 @@
+^C:\USERS\53890197\DOCUMENTS\UVKORNIO-VISUALIZER-CODEX-CREATE-VULKAN-AUDIO-VISUALIZER-FRAMEWORK\BUILD\_DEPS\GLFW-SRC\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework -BC:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build --check-stamp-file C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-build/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

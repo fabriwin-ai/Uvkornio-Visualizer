@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/glfw-populate"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/af6b1678a61b4b92cdfbbbeefb0a0bba/glfw-populate.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/22067e84995b363486aa330f40252929/glfw-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"glfw-populate"
+		],
+		"name" : "glfw-populate"
+	}
+}

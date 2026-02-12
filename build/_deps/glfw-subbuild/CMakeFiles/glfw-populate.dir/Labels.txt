@@ -1,0 +1,14 @@
+# Target labels
+ glfw-populate
+# Source files and their labels
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/glfw-populate
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/af6b1678a61b4b92cdfbbbeefb0a0bba/glfw-populate.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/22067e84995b363486aa330f40252929/glfw-populate-complete.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-build.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-configure.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-download.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-install.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-mkdir.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-patch.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-test.rule
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-subbuild/CMakeFiles/e7797aad7bc994254768d653b335ab6d/glfw-populate-update.rule

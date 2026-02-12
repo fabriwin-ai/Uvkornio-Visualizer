@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/cmake_install.cmake",
+		"C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-build/cmake_install.cmake",
+		"C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-build/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

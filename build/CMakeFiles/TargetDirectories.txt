@@ -1,0 +1,6 @@
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/CMakeFiles/uvkornio_visualizer.dir
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-build/CMakeFiles/ALL_BUILD.dir
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-build/src/CMakeFiles/update_mappings.dir
+C:/Users/53890197/Documents/Uvkornio-Visualizer-codex-create-vulkan-audio-visualizer-framework/build/_deps/glfw-build/src/CMakeFiles/glfw.dir
